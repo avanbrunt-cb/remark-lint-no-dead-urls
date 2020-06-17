@@ -17,6 +17,9 @@ function noDeadUrls(ast, file, options) {
     )
       return;
 
+    if (options.ignoreURL.includes(url))
+      return;
+
     if (!urlToNodes[url]) {
       urlToNodes[url] = [];
     }
