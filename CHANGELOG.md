@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Fixed vulnerabilities
+- Add ignoredURL support
+
 ## 1.0.2
 
 - Walk the AST fewer times.
