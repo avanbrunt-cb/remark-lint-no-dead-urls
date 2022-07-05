@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Hardcode check-links
+
 ## 1.0.3
 
 - Fixed vulnerabilities
