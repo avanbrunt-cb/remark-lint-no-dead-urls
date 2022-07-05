@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- Change to forked check-links
+
 ## 1.0.4
 
 - Hardcode check-links

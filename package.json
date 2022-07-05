@@ -1,6 +1,6 @@
 {
   "name": "remark-lint-no-dead-urls",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Ensure that URLs in your Markdown are alive",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/davidtheclark/remark-lint-no-dead-urls#readme",
   "dependencies": {
-    "check-links": "1.1.0",
+    "check-links": "avanbrunt-cb/check-links",
     "unified-lint-rule": "^1.0.4",
     "unist-util-visit": "^2.0.1"
   },
