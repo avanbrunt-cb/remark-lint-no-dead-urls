@@ -3,7 +3,6 @@
 const rule = require('unified-lint-rule');
 const visit = require('unist-util-visit');
 const checkLinks = require('check-links');
-const isOnline = require('is-online');
 
 function noDeadUrls(ast, file, options) {
   const urlToNodes = {};
@@ -17,8 +16,7 @@ function noDeadUrls(ast, file, options) {
     )
       return;
 
-    if (options.ignoreURL.includes(url))
-      return;
+    if (options.ignoreURL.includes(url)) return;
 
     if (!urlToNodes[url]) {
       urlToNodes[url] = [];
