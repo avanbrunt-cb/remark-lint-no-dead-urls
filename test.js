@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import remarkLintNoDeadUrls from 'remark-lint-no-dead-urls'
+import remarkLintNoDeadUrls, {clearCache} from 'remark-lint-no-dead-urls'
 import {remark} from 'remark'
 import {MockAgent, getGlobalDispatcher, setGlobalDispatcher} from 'undici'
 import {compareMessage} from 'vfile-sort'
@@ -9,11 +9,12 @@ test('remark-lint-no-dead-urls', async function (t) {
   await t.test('should expose the public api', async function () {
     assert.deepEqual(
       Object.keys(await import('remark-lint-no-dead-urls')).sort(),
-      ['default']
+      ['clearCache', 'default']
     )
   })
 
   await t.test('should work', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -51,6 +52,7 @@ Here is another [bad link](https://does-not-exists.com).
   })
 
   await t.test('should work w/o URLs', async function () {
+    clearCache()
     const document = `# Title
 
 No URLs in here.
@@ -61,6 +63,7 @@ No URLs in here.
   })
 
   await t.test('should normally ignore relative URLs', async function () {
+    clearCache()
     const document = `[](a.md)
 [](/b.md)
 [](./c.md)
@@ -78,6 +81,7 @@ No URLs in here.
   })
 
   await t.test('should checks full URLs', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -107,6 +111,7 @@ No URLs in here.
   })
 
   await t.test('should check relative URLs w/ `from`', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -145,6 +150,7 @@ No URLs in here.
   await t.test(
     'should check relative URLs w/ `meta.origin`, `meta.pathname`',
     async function () {
+      clearCache()
       const globalDispatcher = getGlobalDispatcher()
       const mockAgent = new MockAgent()
       mockAgent.enableNetConnect(/(?=a)b/)
@@ -172,6 +178,7 @@ No URLs in here.
   )
 
   await t.test('should check definitions, images', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -199,6 +206,7 @@ No URLs in here.
   })
 
   await t.test('should skip URLs w/ unknown protocols', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -222,6 +230,7 @@ No URLs in here.
   })
 
   await t.test('should ignore localhost w/ `skipLocalhost`', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -251,6 +260,7 @@ No URLs in here.
   })
 
   await t.test('should support anchors', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -278,6 +288,7 @@ No URLs in here.
   })
 
   await t.test('should support `skipUrlPatterns`', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -304,6 +315,7 @@ No URLs in here.
   })
 
   await t.test('should support `deadOrAlive` options', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -328,6 +340,7 @@ No URLs in here.
   })
 
   await t.test('should support permanent redirects', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -356,6 +369,7 @@ No URLs in here.
   })
 
   await t.test('should support temporary redirects', async function () {
+    clearCache()
     const globalDispatcher = getGlobalDispatcher()
     const mockAgent = new MockAgent()
     mockAgent.enableNetConnect(/(?=a)b/)
@@ -379,5 +393,37 @@ No URLs in here.
     file.messages.sort(compareMessage)
 
     assert.deepEqual(file.messages.map(String), [])
+  })
+
+  await t.test('should cache URL checks across files', async function () {
+    clearCache()
+    const globalDispatcher = getGlobalDispatcher()
+    const mockAgent = new MockAgent()
+    mockAgent.enableNetConnect(/(?=a)b/)
+    setGlobalDispatcher(mockAgent)
+    const site = mockAgent.get('https://example.com')
+
+    // Set up the mock to only respond once
+    // If caching works, we should be able to process multiple files
+    // without needing multiple intercepts
+    site.intercept({path: '/cached'}).reply(200, 'ok', {
+      headers: {'Content-Type': 'text/html'}
+    })
+
+    const document1 = `[a](https://example.com/cached)`
+    const document2 = `[b](https://example.com/cached)`
+
+    // Process first file - should hit the network
+    const file1 = await remark().use(remarkLintNoDeadUrls).process(document1)
+
+    // Process second file with same URL - should use cache
+    const file2 = await remark().use(remarkLintNoDeadUrls).process(document2)
+
+    await mockAgent.close()
+    await setGlobalDispatcher(globalDispatcher)
+
+    // Both files should have no errors
+    assert.equal(file1.messages.length, 0)
+    assert.equal(file2.messages.length, 0)
   })
 })

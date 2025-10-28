@@ -1,2 +1,2 @@
 // Note: types exposed from `index.d.ts`.
-export {default} from './lib/index.js'
+export {default, clearCache} from './lib/index.js'

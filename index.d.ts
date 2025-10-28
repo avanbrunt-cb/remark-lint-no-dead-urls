@@ -3,6 +3,14 @@ import type {Options as RawDeadOrAliveOptions} from 'dead-or-alive'
 export {default} from './lib/index.js'
 
 /**
+ * Clear the URL cache.
+ *
+ * This can be useful in testing scenarios or when you want to force
+ * re-checking URLs that were previously cached.
+ */
+export function clearCache(): void
+
+/**
  * Configuration.
  */
 export interface Options {

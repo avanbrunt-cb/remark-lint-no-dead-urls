@@ -12,18 +12,26 @@
 
 ## Contents
 
-* [What is this?](#what-is-this)
-* [When should I use this?](#when-should-i-use-this)
-* [Install](#install)
-* [Use](#use)
-* [API](#api)
-  * [`Options`](#options)
-  * [`unified().use(remarkLintNoDeadUrls[, options])`](#unifieduseremarklintnodeadurls-options)
-* [Related](#related)
-* [Compatibility](#compatibility)
-* [Security](#security)
-* [Contribute](#contribute)
-* [License](#license)
+- [remark-lint-no-dead-urls](#remark-lint-no-dead-urls)
+  - [Contents](#contents)
+  - [What is this?](#what-is-this)
+  - [When should I use this?](#when-should-i-use-this)
+  - [Install](#install)
+  - [Use](#use)
+  - [API](#api)
+    - [`clearCache()`](#clearcache)
+          - [Returns](#returns)
+    - [`Options`](#options)
+          - [Fields](#fields)
+    - [`unified().use(remarkLintNoDeadUrls[, options])`](#unifieduseremarklintnodeadurls-options)
+          - [Notes](#notes)
+          - [Parameters](#parameters)
+          - [Returns](#returns-1)
+  - [Related](#related)
+  - [Compatibility](#compatibility)
+  - [Security](#security)
+  - [Contribute](#contribute)
+  - [License](#license)
 
 ## What is this?
 
@@ -119,11 +127,24 @@ On the CLI in a config file (here a `package.json`):
 
 ## API
 
-This package exports no identifiers.
+This package exports the identifier [`clearCache`][api-clear-cache].
 It exports the additional [TypeScript][] type
 [`Options`][api-options].
 The default export is
 [`remarkLintNoDeadUrls`][api-remark-lint-no-dead-urls].
+
+### `clearCache()`
+
+Clear the URL cache.
+
+This package caches URL check results within a single run to avoid checking
+the same URL multiple times.
+This can be useful in testing scenarios or when you want to force re-checking
+URLs that were previously cached.
+
+###### Returns
+
+Nothing (`undefined`).
 
 ### `Options`
 
@@ -157,6 +178,13 @@ Warn when URLs are dead.
 
 ###### Notes
 
+**Caching:** This package automatically caches URL check results within a
+single run.
+If the same URL appears in multiple files,
+it will only be checked once.
+This significantly improves performance when processing multiple markdown files.
+Use [`clearCache()`][api-clear-cache] if you need to force re-checking URLs.
+
 To improve performance,
 decrease `maxRetries` in [`deadOrAliveOptions`][github-dead-or-alive-options]
 and/or decrease the value used for
@@ -164,7 +192,7 @@ and/or decrease the value used for
 The normal behavior is to assume connections might be flakey and to sleep a
 while and retry a couple times.
 
-If you do not care whether anchors exist and don’t need to support HTML
+If you do not care whether anchors exist and don't need to support HTML
 redirects,
 you can pass `checkAnchor: false` and `followMetaHttpEquiv: false` in
 [`deadOrAliveOptions`][github-dead-or-alive-options],
@@ -215,6 +243,8 @@ abide by its terms.
 ## License
 
 [MIT][file-license] © [David Clark][github-david-clark]
+
+[api-clear-cache]: #clearcache
 
 [api-remark-lint-no-dead-urls]: #unifieduseremarklintnodeadurls-options
 
