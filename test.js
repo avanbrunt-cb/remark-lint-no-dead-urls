@@ -46,8 +46,8 @@ Here is another [bad link](https://does-not-exists.com).
     file.messages.sort(compareMessage)
 
     assert.deepEqual(file.messages.map(String), [
-      '6:11-6:51: Unexpected dead URL `https://exists.com/does/not/`, expected live URL',
-      '8:17-8:56: Unexpected dead URL `https://does-not-exists.com/`, expected live URL'
+      '6:11-6:51: Unexpected dead URL `https://exists.com/does/not/`, expected live URL: Unexpected not ok response `404` (`Not Found`) on `https://exists.com/does/not/`',
+      '8:17-8:56: Unexpected dead URL `https://does-not-exists.com/`, expected live URL: Unexpected not ok response `404` (`Not Found`) on `https://does-not-exists.com/`'
     ])
   })
 
@@ -103,10 +103,10 @@ No URLs in here.
     file.messages.sort(compareMessage)
 
     assert.deepEqual(file.messages.map(String), [
-      '1:1-1:17: Unexpected dead URL `http://a.com/`, expected live URL',
-      '2:1-2:18: Unexpected dead URL `https://b.com/`, expected live URL',
-      '3:1-3:22: Unexpected dead URL `c:\\Documents\\c.md`, expected live URL',
-      '4:1-4:29: Unexpected dead URL `file:///Users/tilde/d.js`, expected live URL'
+      '1:1-1:17: Unexpected dead URL `http://a.com/`, expected live URL: Unexpected error fetching `http://a.com/`',
+      '2:1-2:18: Unexpected dead URL `https://b.com/`, expected live URL: Unexpected error fetching `https://b.com/`',
+      '3:1-3:22: Unexpected dead URL `c:\\Documents\\c.md`, expected live URL: Unexpected error fetching `c:\\Documents\\c.md`',
+      '4:1-4:29: Unexpected dead URL `file:///Users/tilde/d.js`, expected live URL: Unexpected error fetching `file:///Users/tilde/d.js`'
     ])
   })
 
@@ -137,13 +137,13 @@ No URLs in here.
     file.messages.sort(compareMessage)
 
     assert.deepEqual(file.messages.map(String), [
-      '2:1-2:9: Unexpected dead URL `https://example.com/from/a.md`, expected live URL',
-      '3:1-3:10: Unexpected dead URL `https://example.com/b.md`, expected live URL',
-      '4:1-4:11: Unexpected dead URL `https://example.com/from/c.md`, expected live URL',
-      '5:1-5:12: Unexpected dead URL `https://example.com/d.md`, expected live URL',
-      '6:1-6:7: Unexpected dead URL `https://example.com/from/folder#e`, expected live URL',
-      '7:1-7:7: Unexpected dead URL `https://example.com/from/folder?f`, expected live URL',
-      '8:1-8:12: Unexpected dead URL `https://g.com/`, expected live URL'
+      '2:1-2:9: Unexpected dead URL `https://example.com/from/a.md`, expected live URL: Unexpected error fetching `https://example.com/from/a.md`',
+      '3:1-3:10: Unexpected dead URL `https://example.com/b.md`, expected live URL: Unexpected error fetching `https://example.com/b.md`',
+      '4:1-4:11: Unexpected dead URL `https://example.com/from/c.md`, expected live URL: Unexpected error fetching `https://example.com/from/c.md`',
+      '5:1-5:12: Unexpected dead URL `https://example.com/d.md`, expected live URL: Unexpected error fetching `https://example.com/d.md`',
+      '6:1-6:7: Unexpected dead URL `https://example.com/from/folder#e`, expected live URL: Unexpected error fetching `https://example.com/from/folder#e`',
+      '7:1-7:7: Unexpected dead URL `https://example.com/from/folder?f`, expected live URL: Unexpected error fetching `https://example.com/from/folder?f`',
+      '8:1-8:12: Unexpected dead URL `https://g.com/`, expected live URL: Unexpected error fetching `https://g.com/`'
     ])
   })
 
@@ -172,7 +172,7 @@ No URLs in here.
       file.messages.sort(compareMessage)
 
       assert.deepEqual(file.messages.map(String), [
-        '1:1-1:9: Unexpected dead URL `https://example.com/from/a.md`, expected live URL'
+        '1:1-1:9: Unexpected dead URL `https://example.com/from/a.md`, expected live URL: Unexpected error fetching `https://example.com/from/a.md`'
       ])
     }
   )
@@ -199,9 +199,9 @@ No URLs in here.
     file.messages.sort(compareMessage)
 
     assert.deepEqual(file.messages.map(String), [
-      '2:1-2:32: Unexpected dead URL `https://example.com/a`, expected live URL',
-      '4:1-4:30: Unexpected dead URL `https://example.com/b`, expected live URL',
-      '6:1-6:36: Unexpected dead URL `https://example.com/c`, expected live URL'
+      '2:1-2:32: Unexpected dead URL `https://example.com/a`, expected live URL: Unexpected error fetching `https://example.com/a`',
+      '4:1-4:30: Unexpected dead URL `https://example.com/b`, expected live URL: Unexpected error fetching `https://example.com/b`',
+      '6:1-6:36: Unexpected dead URL `https://example.com/c`, expected live URL: Unexpected error fetching `https://example.com/c`'
     ])
   })
 
@@ -255,7 +255,7 @@ No URLs in here.
     file.messages.sort(compareMessage)
 
     assert.deepEqual(file.messages.map(String), [
-      '8:3-8:26: Unexpected dead URL `http://example.com/`, expected live URL'
+      '8:3-8:26: Unexpected dead URL `http://example.com/`, expected live URL: Unexpected error fetching `http://example.com/`'
     ])
   })
 
@@ -283,7 +283,7 @@ No URLs in here.
     file.messages.sort(compareMessage)
 
     assert.deepEqual(file.messages.map(String), [
-      '3:1-3:40: Unexpected dead URL `https://example.com/#does-not-exist`, expected live URL'
+      '3:1-3:40: Unexpected dead URL `https://example.com/#does-not-exist`, expected live URL: Unexpected error fetching `https://example.com/#does-not-exist`'
     ])
   })
 
